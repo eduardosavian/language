@@ -154,7 +154,7 @@ public class Simplex {
             reader.close();
 
             stringBuilder.insert(0, "{\n");
-            stringBuilder.append("\n}\ndebug;");
+            stringBuilder.append("\n}");
 
             return stringBuilder.toString();
         } catch (IOException e) {

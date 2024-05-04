@@ -1,4 +1,6 @@
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -7,7 +9,9 @@ import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
+    private Deque<String> scopeStack = new ArrayDeque<>();
     ArrayList<Symbol> vars = new ArrayList<Symbol>();
+    private Integer scopeCounter = 0;
 
     @Override
     public Integer visitBitShift(SimplexParser.BitShiftContext ctx) {
@@ -79,15 +83,12 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
     public Integer visitFuncDeclaration(SimplexParser.FuncDeclarationContext ctx) {
         // TODO Auto-generated method stub
 
-        // System.out.println(ctx.getText());
-
         return super.visitFuncDeclaration(ctx);
     }
 
     @Override
     public Integer visitFunctionCall(SimplexParser.FunctionCallContext ctx) {
         // TODO Auto-generated method stub
-        // System.out.println(ctx.getText());
 
         return super.visitFunctionCall(ctx);
     }
@@ -99,11 +100,11 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
         return super.visitGroup(ctx);
     }
 
-    @Override
     public Integer visitIdentifierList(SimplexParser.IdentifierListContext ctx) {
-
+        
         return super.visitIdentifierList(ctx);
     }
+
 
     @Override
     public Integer visitIfStatement(SimplexParser.IfStatementContext ctx) {
@@ -167,11 +168,31 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
     @Override
     public Integer visitScope(SimplexParser.ScopeContext ctx) {
-        // TODO Auto-generated method stub
-        // System.out.println("scope: " + ctx.getText());
-
-        return super.visitScope(ctx);
+        String currentScope = getNextScopeName();
+        scopeStack.push(currentScope);
+        try {
+            return super.visitScope(ctx);
+        } finally {
+            scopeStack.pop();
+        }
     }
+
+    private String getNextScopeName() {
+        scopeCounter++;
+        if (scopeStack.isEmpty()) {
+            return scopeCounter.toString();
+        } else {
+            return scopeStack.peek() + "-" + scopeCounter;
+        }
+    }
+
+    private String getCurrentScope() {
+        if (!scopeStack.isEmpty()) {
+            return scopeStack.peek();
+        }
+        return "global";
+    }
+
 
     @Override
     public Integer visitSimpleFor(SimplexParser.SimpleForContext ctx) {
@@ -258,31 +279,41 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
         Integer varsSize = idsCount;
 
+        String currentScope = getCurrentScope();
+
         for (int i = 0; i < varsSize; i++) {
             if (i % 2 == 0) {
                 String id = ids.getChild(i).getText();
-                Symbol symbol = new Symbol(id, typeText, expressionsExist);
+
+                if (isVariableRedeclaredInScope(id, currentScope)) {
+                    System.err.println("Error: Variable '" + id + "' already exists in scope '" + currentScope + "'");
+                    System.exit(1);
+                }
+
+        
+                Symbol symbol = new Symbol(id, typeText, expressionsExist, getCurrentScope());
                 vars.add(symbol);
             }
         }
 
-        // if(type.contains("[")) {
-        // symbol.setArray(true);
-        // } else {
-        // symbol.setArray(false);
-        // }
-
-        // initialized;
         // used;
-        // scoped;
         // param;
-        // array;
         // matrix;
         // ref;
         // func;
 
         return super.visitVarDeclaration(ctx);
     }
+
+    private boolean isVariableRedeclaredInScope(String identifier, String scope) {
+        for (Symbol symbol : vars) {
+            if (symbol.getIdentifier().equals(identifier) && symbol.getScope().equals(scope)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     @Override
     protected Integer aggregateResult(Integer aggregate, Integer nextResult) {
@@ -344,6 +375,7 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
         super.finalize();
     }
+    
 
     public void printSymbols() {
         for(Symbol symbol : vars) {

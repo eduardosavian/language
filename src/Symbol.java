@@ -20,14 +20,14 @@ public class Symbol {
     private Type type;
     private Boolean isInitialized = false;
     private Boolean used = false;
-    private String scoped = "";
+    private String Scope = "";
     private Boolean isParameter = false;
-    private Boolean isArray = false;
+    private Boolean isVector = false;
     private Boolean isMatrix = false;
     private Boolean isReference = false;
     private Boolean isFunction = false;
 
-    Symbol(String identifier, String type, Boolean expressionsExist) {
+    Symbol(String identifier, String type, Boolean expressionsExist, String Scope) {
         this.identifier = identifier;
 
         Boolean typeExists = false;
@@ -47,14 +47,14 @@ public class Symbol {
             System.exit(1);
         }
 
-        this.isMatrix = (type.contains("["));
+        this.isVector = (type.contains("["));
 
         this.isInitialized = expressionsExist;
         
         this.used = false;
-        this.scoped = "";
+        this.Scope = Scope;
         this.isParameter = false;
-        this.isArray = false;
+        this.isVector = false;
         this.isReference = false;
         this.isFunction = false;
 
@@ -92,12 +92,12 @@ public class Symbol {
         this.used = used;
     }
 
-    public String getScoped() {
-        return scoped;
+    public String getScope() {
+        return Scope;
     }
 
-    public void setScoped(String scoped) {
-        this.scoped = scoped;
+    public void setScope(String Scope) {
+        this.Scope = Scope;
     }
 
     public Boolean getIsParameter() {
@@ -108,12 +108,12 @@ public class Symbol {
         this.isParameter = isParameter;
     }
 
-    public Boolean getIsArray() {
-        return isArray;
+    public Boolean getisVector() {
+        return isVector;
     }
 
-    public void setIsArray(Boolean isArray) {
-        this.isArray = isArray;
+    public void setisVector(Boolean isVector) {
+        this.isVector = isVector;
     }
 
     public Boolean getIsMatrix() {
@@ -150,11 +150,11 @@ public class Symbol {
         System.out.print(" | ");
         System.out.print("Used: " + used);
         System.out.print(" | ");
-        System.out.print("Scoped: " + scoped);
+        System.out.print("Scope: " + Scope);
         System.out.print(" | ");
         System.out.print("Parameter: " + isParameter);
         System.out.print(" | ");
-        System.out.print("Array: " + isArray);
+        System.out.print("Array: " + isVector);
         System.out.print(" | ");
         System.out.print("Matrix: " + isMatrix);
         System.out.print(" | ");
