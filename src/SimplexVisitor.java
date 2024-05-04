@@ -238,14 +238,63 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
     @Override
     public Integer visitVarAssignment(SimplexParser.VarAssignmentContext ctx) {
+        String ctxText = ctx.getText();
+        Integer childCount = ctx.getChildCount();
+        System.out.println("Text: " + ctxText + "\nChild Count: " + childCount.toString());
+
+        ParseTree ids = ctx.getChild(0);
+        String idsText = ids.getText();
+        Integer idsCount = ids.getChildCount();
+
+        ParseTree expressions = null;
+        Integer expressionsCount;
+        String expressionsText;
+
+
+        expressions = ctx.getChild(2);
+        expressionsCount = expressions.getChildCount();
+        expressionsText = expressions.getText();
+
+        if (idsCount != expressionsCount) {
+            System.err.println(
+                                "The ids list size '" + idsText 
+                            + "' is different from expressions list size " + expressionsText 
+                            + "'");
+            System.exit(1);
+        }
+
+        Integer varsSize = idsCount;
+
+        String currentScope = getCurrentScope();
+
+        for (int i = 0; i < varsSize; i++) {
+            if (i % 2 == 0) {
+                String id = ids.getChild(i).getText();
+
+                if (isVariableDefined(id, currentScope)) {
+                    System.err.println("Error: Variable '" + id + "' doesn`t exists in scope '" + currentScope + "'");
+                    System.exit(1);
+                }
+            }
+        }
+
+        
 
         return super.visitVarAssignment(ctx);
     }
 
+
+    private boolean isVariableDefined(String identifier, String scope) {
+        for (Symbol symbol : vars) {
+            if (symbol.getIdentifier().equals(identifier) && symbol.getScope().equals(scope)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public Integer visitVarDeclaration(SimplexParser.VarDeclarationContext ctx) {
-        // TODO Auto-generated method stub
-
         String ctxText = ctx.getText();
         Integer childCount = ctx.getChildCount();
         //System.out.println("Text: " + ctxText + "\nChild Count: " + childCount.toString());

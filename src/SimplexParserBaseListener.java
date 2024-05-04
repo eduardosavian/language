@@ -88,18 +88,6 @@ public class SimplexParserBaseListener implements SimplexParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDebuger(SimplexParser.DebugerContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitDebuger(SimplexParser.DebugerContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterVarDeclaration(SimplexParser.VarDeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
