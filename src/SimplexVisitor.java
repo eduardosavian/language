@@ -143,6 +143,7 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
     @Override
     public Integer visitPrimary(SimplexParser.PrimaryContext ctx) {
+        System.out.println("Primary: " + ctx.getText());
 
         return super.visitPrimary(ctx);
     }
@@ -238,7 +239,7 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
     public Integer visitVarAssignment(SimplexParser.VarAssignmentContext ctx) {
         String ctxText = ctx.getText();
         Integer childCount = ctx.getChildCount();
-        System.out.println("Text: " + ctxText + "\nChild Count: " + childCount.toString());
+        //System.out.println("Text: " + ctxText + "\nChild Count: " + childCount.toString());
 
         ParseTree ids = ctx.getChild(0);
         String idsText = ids.getText();
@@ -268,11 +269,18 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
             if (i % 2 == 0) {
                 String id = ids.getChild(i).getText();
                 String expression = expressions.getChild(i).getText();
+                //System.out.println("ID: " + id + " Expression: " + expression);
 
                 if (!isVariableDefined(id, currentScope)) {
                     System.err.println("Error: Variable '" + id + "' doesn`t exists in scope '" + currentScope + "'");
                     System.exit(1);
                 }
+
+                // if (!isVariableDefined(expression, currentScope)) {
+                //     System.err.println("Error: Variable '" + id + "' doesn`t exists in scope '" + currentScope + "'");
+                //     System.exit(1);
+                // }
+
 
                 // areVariablesSameTypeInScope(id1, currentScope1, id2, currentScope2)
             }
@@ -320,6 +328,7 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
             expressions = ctx.getChild(4);
             expressionsCount = expressions.getChildCount();
             expressionsText = expressions.getText();
+            //System.out.println(expressions.);
 
             if (idsCount != expressionsCount) {
                 System.err.println(
@@ -329,6 +338,7 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
                 System.exit(1);
             }
         }
+        
 
         Integer varsSize = idsCount;
 
