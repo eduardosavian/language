@@ -101,10 +101,9 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
     }
 
     public Integer visitIdentifierList(SimplexParser.IdentifierListContext ctx) {
-        
+
         return super.visitIdentifierList(ctx);
     }
-
 
     @Override
     public Integer visitIfStatement(SimplexParser.IfStatementContext ctx) {
@@ -193,7 +192,6 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
         return "global";
     }
 
-
     @Override
     public Integer visitSimpleFor(SimplexParser.SimpleForContext ctx) {
 
@@ -250,15 +248,14 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
         Integer expressionsCount;
         String expressionsText;
 
-
         expressions = ctx.getChild(2);
         expressionsCount = expressions.getChildCount();
         expressionsText = expressions.getText();
 
         if (idsCount != expressionsCount) {
             System.err.println(
-                                "The ids list size '" + idsText 
-                            + "' is different from expressions list size " + expressionsText 
+                    "The ids list size '" + idsText
+                            + "' is different from expressions list size " + expressionsText
                             + "'");
             System.exit(1);
         }
@@ -270,21 +267,21 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
         for (int i = 0; i < varsSize; i++) {
             if (i % 2 == 0) {
                 String id = ids.getChild(i).getText();
+                String expression = expressions.getChild(i).getText();
 
-                if (isVariableDefined(id, currentScope)) {
+                if (!isVariableDefined(id, currentScope)) {
                     System.err.println("Error: Variable '" + id + "' doesn`t exists in scope '" + currentScope + "'");
                     System.exit(1);
                 }
+
+                // areVariablesSameTypeInScope(id1, currentScope1, id2, currentScope2)
             }
         }
-
-        
 
         return super.visitVarAssignment(ctx);
     }
 
-
-    private boolean isVariableDefined(String identifier, String scope) {
+    private Boolean isVariableDefined(String identifier, String scope) {
         for (Symbol symbol : vars) {
             if (symbol.getIdentifier().equals(identifier) && symbol.getScope().equals(scope)) {
                 return true;
@@ -293,11 +290,18 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
         return false;
     }
 
+    // private Boolean areVariablesSameTypeInScope(String id1, currentScope1, id2,
+    // currentScope2) {
+
+    // return false;
+    // }
+
     @Override
     public Integer visitVarDeclaration(SimplexParser.VarDeclarationContext ctx) {
         String ctxText = ctx.getText();
         Integer childCount = ctx.getChildCount();
-        //System.out.println("Text: " + ctxText + "\nChild Count: " + childCount.toString());
+        // System.out.println("Text: " + ctxText + "\nChild Count: " +
+        // childCount.toString());
 
         ParseTree ids = ctx.getChild(0);
         String idsText = ids.getText();
@@ -319,8 +323,8 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
             if (idsCount != expressionsCount) {
                 System.err.println(
-                                    "The ids list size '" + idsText 
-                                + "' is different from expressions list size " + expressionsText 
+                        "The ids list size '" + idsText
+                                + "' is different from expressions list size " + expressionsText
                                 + "'");
                 System.exit(1);
             }
@@ -339,30 +343,25 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
                     System.exit(1);
                 }
 
-        
                 Symbol symbol = new Symbol(id, typeText, expressionsExist, getCurrentScope());
                 vars.add(symbol);
             }
         }
-
-        // used;
-        // param;
-        // matrix;
-        // ref;
-        // func;
 
         return super.visitVarDeclaration(ctx);
     }
 
     private boolean isVariableRedeclaredInScope(String identifier, String scope) {
         for (Symbol symbol : vars) {
-            if (symbol.getIdentifier().equals(identifier) && symbol.getScope().equals(scope)) {
-                return true;
+            if (symbol.getIdentifier().equals(identifier) && scope.contains(symbol.getScope())) {
+                System.err.println(
+                        "Error: Variable redeclaration is forbidden, '" + identifier + "' already exists in scope '."
+                                + scope + "'. Original declaretion in scope'" + symbol.getScope() + "'");
+                System.exit(1);
             }
         }
         return false;
     }
-
 
     @Override
     protected Integer aggregateResult(Integer aggregate, Integer nextResult) {
@@ -384,7 +383,7 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
     @Override
     public Integer visit(ParseTree tree) {
-    
+
         return super.visit(tree);
     }
 
@@ -424,10 +423,9 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
         super.finalize();
     }
-    
 
     public void printSymbols() {
-        for(Symbol symbol : vars) {
+        for (Symbol symbol : vars) {
             symbol.print();
         }
     }
