@@ -34,6 +34,17 @@ public class Symbol {
         this.isParameter = false;
         this.isFunction = false;
     }
+
+    public Symbol(Symbol another) {
+        this.identifier = another.identifier;
+        this.type = another.type;
+        this.isInitialized = another.isInitialized;
+        this.used = another.used;
+        this.scope = another.scope;
+        this.modifiers = another.modifiers;
+        this.isParameter = another.isParameter;
+        this.isFunction = another.isFunction;
+    }
     
     public String getIdentifier() {
         return identifier;
@@ -105,7 +116,9 @@ public class Symbol {
 
     public void setLessModifiers(String modifiers) {
         System.out.println("Modifiers: " + this.modifiers + " | Less: " + modifiers);
+       
         this.modifiers = this.modifiers.substring(0, this.modifiers.length() - modifiers.length());
+        System.out.println(this.modifiers);
     }
 
     public void print() {

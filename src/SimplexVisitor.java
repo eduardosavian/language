@@ -91,26 +91,11 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
     @Override
     public Integer visitExpression(SimplexParser.ExpressionContext ctx) {
+        super.visitExpression(ctx);
+
         if (var != null) {
             var.setIsInitialized(true);
         }
-
-        super.visitExpression(ctx);
-
-        // for (Symbol symbol : symbolStack) {
-        //     symbol.print();
-        // }
-
-        // for (Symbol symbol1 : symbolStack) {
-        //     for (Symbol symbol2 : symbolStack) {
-        //         if (!symbol1.getType().equals(symbol2.getType())) {
-        //             System.err.println("Error: Variable '" + symbol1.getIdentifier() + "' is not the same type");
-        //             System.exit(1);
-        //         }
-        //     }
-        // }
-
-        // symbolStack.clear();
 
         return null;
     }
@@ -189,22 +174,19 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
     @Override
     public Integer visitIndexing(SimplexParser.IndexingContext ctx) {
-        // var symbolAux = searchSymbol(ctx.ID().getText(), getCurrentScope());
-        // if (symbolAux != null) {
+        var symbolAux = searchSymbol(ctx.ID().getText(), getCurrentScope());
 
-        // symbolAux.setLessModifiers(ctx.SQUARE_OPEN().getText() +
-        // ctx.SQUARE_CLOSE().getText());
-        // vars_aux.add(symbolAux);
-        // symbolStack.push(symbolAux);
-        // for (Symbol symbol : symbolStack) {
-        // symbol.print();
-        // }
-        // } else {
-        // System.err.println("Error: Variable '" + ctx.ID().getText() + "' not declared
-        // in scope '"
-        // + getCurrentScope() + "'");
-        // System.exit(1);
-        // }
+        
+        if (symbolAux != null) {
+            symbolAux.setLessModifiers(ctx.SQUARE_OPEN().getText() + ctx.SQUARE_CLOSE().getText());
+            
+            symbolStack.push(symbolAux);
+    
+        } else {
+            System.err.println("Error: Variable '" + ctx.ID().getText() + "' not declared in scope '"
+                    + getCurrentScope() + "'");
+            System.exit(1);
+        }
 
         // super.visitIndexing(ctx);
 
@@ -220,11 +202,24 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
     public Integer visitInlineStatement(SimplexParser.InlineStatementContext ctx) {
         super.visitInlineStatement(ctx);
 
-
+       
         for (Symbol symbol : symbolStack) {
-            if (vars.get(vars.size()-1).getType() != symbol.getType()) {
-                System.err.println("Error: Variable '" + vars.get(vars.size()-1).getIdentifier() + "' is not the same type");
+
+            System.out.println("Symbol: " + symbol.getIdentifier() + " " + symbol.getType() + " " + symbol.getScope()
+                    + " " + symbol.getModifiers());
+            System.out.println("SymbolAux: " + vars.get(vars.size() - 1).getIdentifier() + " " + vars.get(vars.size() - 1).getType() + " " + vars.get(vars.size() - 1).getScope()
+                    + " " + vars.get(vars.size() - 1).getModifiers());
+            if (vars.get(vars.size() - 1).getType() != symbol.getType()) {
+                System.err.println(
+                        "Error: Variable '" + vars.get(vars.size() - 1).getIdentifier() + "' is not the same type");
                 System.exit(1);
+            }
+            
+            System.out.println(symbol.getModifiers().equals(vars.get(vars.size() - 1).getModifiers()));
+            if (!symbol.getModifiers().equals(vars.get(vars.size() - 1).getModifiers())) {
+                System.err.println("Error: Variable '" + vars.get(vars.size() - 1).getIdentifier() + "' is [] not equal");
+                System.exit(1);
+                
             }
         }
 
@@ -276,11 +271,10 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
     public Integer visitPrimary(SimplexParser.PrimaryContext ctx) {
 
         varAux = new Symbol(getCurrentScope());
-        System.out.println("Primary " + ctx.getText());
+
 
         if (ctx != null) {
             if (ctx.ID() != null) {
-                System.out.println("ID " + ctx.getText());
                 if (!isDeclared(ctx.ID().getText(), getCurrentScope())) {
                     System.err.println("Error: Variable '" + ctx.ID().getText() + "' not declared in scope '"
                             + getCurrentScope() + "'");
@@ -289,33 +283,24 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
                 Symbol symbol_aux = searchSymbol(ctx.ID().getText(), getCurrentScope());
 
-                vars_aux.add(symbol_aux);
-                symbolStack.push(varAux);
+                //vars_aux.add(symbol_aux);
+                //symbolStack.push(varAux);
             } else if (ctx.LITERAL_RUNE() != null) {
                 System.out.println("Rune " + ctx.getText());
-                symbolStack.push(varAux);
+                //symbolStack.push(varAux);
             } else if (ctx.LITERAL_STRING() != null) {
                 varAux.setIdentifier(ctx.getText());
                 varAux.setType("string");
-                symbolStack.push(varAux);
+                //symbolStack.push(varAux);
             } else if (ctx.NIL() != null) {
                 System.out.println("Null " + ctx.getText());
-                
-                symbolStack.push(varAux);
+
+                //symbolStack.push(varAux);
             }
 
         }
 
         return super.visitPrimary(ctx);
-    }
-
-    private Boolean isSameType(String var, String scope) {
-        for (Symbol symbol : vars) {
-            if (symbol.getIdentifier().equals(var) && scope.contains(symbol.getScope())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override
@@ -393,7 +378,7 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
     private Symbol searchSymbol(String identifier, String scope) {
         for (Symbol symbol : vars) {
             if (symbol.getIdentifier().equals(identifier) && scope.contains(symbol.getScope())) {
-                return symbol;
+                return new Symbol(symbol);
             }
         }
         return null;
@@ -406,7 +391,7 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
     }
 
     public void PrintSymbolsAux() {
-        for (Symbol symbol : vars_aux) {
+        for (Symbol symbol : symbolStack) {
             symbol.print();
         }
     }
