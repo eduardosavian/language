@@ -103,6 +103,11 @@ public class Symbol {
         this.modifiers += modifiers;
     }
 
+    public void setLessModifiers(String modifiers) {
+        System.out.println("Modifiers: " + this.modifiers + " | Less: " + modifiers);
+        this.modifiers = this.modifiers.substring(0, this.modifiers.length() - modifiers.length());
+    }
+
     public void print() {
         System.out.print("Identifier: " + identifier);
         System.out.print(" | ");

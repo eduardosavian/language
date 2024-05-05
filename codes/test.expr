@@ -1,12 +1,3 @@
-a : int = 0;
-c : []int;
-
-k : []int;
-d : [][]int;
-
-i : []int = 0;
-
-
-d[i] = k[i];
-
-d[i + k[i]] = d[i];
+a : int;
+b : []int;
+c : int = 0 + 10.0;

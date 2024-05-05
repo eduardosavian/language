@@ -136,8 +136,8 @@ public class Simplex {
 
         visitor.visit(tree);
         
-        //visitor.printSymbols();
-        visitor.PrintSymbolsAux();
+        visitor.printSymbols();
+        //visitor.PrintSymbolsAux();
     }
 
     private static String readFile(String filePath) {

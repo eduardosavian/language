@@ -14,8 +14,8 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
     ArrayList<Symbol> vars_aux = new ArrayList<Symbol>();
     private Integer scopeCounter = 0;
     private Symbol var = null;
-    private Deque<String> expressionStack = new ArrayDeque<>();
-    private Symbol var_aux = null;
+    private Deque<Symbol> symbolStack = new ArrayDeque<>();
+    private Symbol varAux = null;
 
     @Override
     public Integer visitScope(SimplexParser.ScopeContext ctx) {
@@ -95,11 +95,25 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
             var.setIsInitialized(true);
         }
 
+        varAux = new Symbol(getCurrentScope());
+
         super.visitExpression(ctx);
 
-        for (String expression : expressionStack) {
-            System.out.println(expression);
+        for (Symbol symbol : symbolStack) {
+            symbol.print();
         }
+
+        for (Symbol symbol1 : symbolStack) {
+            for (Symbol symbol2 : symbolStack) {
+                if (!symbol1.getType().equals(symbol2.getType())) {
+                    System.err.println("Error: Variable '" + symbol1.getIdentifier() + "' is not the same type");
+                    System.exit(1);
+                }
+            }
+        }
+
+
+        symbolStack.clear();        
 
         return null;
     }
@@ -155,7 +169,7 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
         }
 
         if (var != null) {
-            var.setIdentifier(ctx.getText());
+            var.setIdentifier(ctx.ID(0).getText());
         }
 
         return super.visitIdentifierList(ctx);
@@ -178,14 +192,29 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
     @Override
     public Integer visitIndexing(SimplexParser.IndexingContext ctx) {
-        var_aux = new Symbol(getCurrentScope());
-        var_aux.setIdentifier(ctx.ID().getText());
+        // var symbolAux = searchSymbol(ctx.ID().getText(), getCurrentScope());
+        // if (symbolAux != null) {
 
-        Symbol var_aux2 = searchSymbol(ctx.ID().getText(), getCurrentScope());
-        
+        //     symbolAux.setLessModifiers(ctx.SQUARE_OPEN().getText() + ctx.SQUARE_CLOSE().getText());
+        //     vars_aux.add(symbolAux);
+        //     symbolStack.push(symbolAux);
+        //     for (Symbol symbol : symbolStack) {
+        //         symbol.print();
+        //     }
+        // } else {
+        //     System.err.println("Error: Variable '" + ctx.ID().getText() + "' not declared in scope '"
+        //             + getCurrentScope() + "'");
+        //     System.exit(1);
+        // }
 
-        vars_aux.add(var_aux2);
-        return super.visitIndexing(ctx);
+        // super.visitIndexing(ctx);
+
+        // for (Symbol symbol : symbolStack) {
+        // }
+
+        // symbolStack.pop();
+
+        return null; 
     }
 
     private Symbol searchSymbol(String identifier, String scope) {
@@ -205,9 +234,35 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
     @Override
     public Integer visitInteger(SimplexParser.IntegerContext ctx) {
+        if (ctx.LITERAL_BIN() != null) {
+            varAux.setIdentifier(ctx.getText());
+            varAux.setType("int");
+        } else if (ctx.LITERAL_INT() != null) {
+            varAux.setIdentifier(ctx.getText());
+            varAux.setType("int");
+            System.out.println("Int " + ctx.getText());
+        } else if (ctx.LITERAL_HEX() != null) {
+            varAux.setIdentifier(ctx.getText());
+            varAux.setType("int");
+        }
+
+        symbolStack.push(varAux);
 
         return super.visitInteger(ctx);
     }
+
+
+    @Override
+    public Integer visitReal(SimplexParser.RealContext ctx) {
+        if (ctx.LITERAL_FLOAT() != null) {
+            varAux.setIdentifier(ctx.getText());
+            varAux.setType("real");
+        }
+        symbolStack.push(varAux);
+        
+        return super.visitReal(ctx);
+    }
+
 
     @Override
     public Integer visitLogicConjunction(SimplexParser.LogicConjunctionContext ctx) {
@@ -222,22 +277,25 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
     @Override
     public Integer visitPrimary(SimplexParser.PrimaryContext ctx) {
         if (ctx.ID() != null) {
+            System.out.println("ID " + ctx.getText());
             if (!isDeclared(ctx.ID().getText(), getCurrentScope())) {
                 System.err.println("Error: Variable '" + ctx.ID().getText() + "' not declared in scope '"
                         + getCurrentScope() + "'");
                 System.exit(1);
             }
 
-            Symbol symbol_aux = new Symbol(getCurrentScope());
-
-            for (Symbol symbol : vars) {
-                if (symbol.getIdentifier().equals(ctx.ID().getText())
-                        && getCurrentScope().contains(symbol.getScope())) {
-                    symbol_aux = symbol;
-                }
-            }
+            Symbol symbol_aux = searchSymbol(ctx.ID().getText(), getCurrentScope());
 
             vars_aux.add(symbol_aux);
+        } else if (ctx.LITERAL_RUNE() != null) {
+            System.out.println("Rune " + ctx.getText());
+            super.visitPrimary(ctx);
+        } else if (ctx.LITERAL_STRING() != null) {
+            System.out.println("String " + ctx.getText());
+            super.visitPrimary(ctx);
+        } else if (ctx.NIL() != null) {
+            System.out.println("Null " + ctx.getText());
+            super.visitPrimary(ctx);
         }
 
         return super.visitPrimary(ctx);
@@ -250,18 +308,6 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
             }
         }
         return false;
-    }
-
-    @Override
-    public Integer visitProgram(SimplexParser.ProgramContext ctx) {
-        // TODO Auto-generated method stub
-        return super.visitProgram(ctx);
-    }
-
-    @Override
-    public Integer visitReal(SimplexParser.RealContext ctx) {
-        // TODO Auto-generated method stub
-        return super.visitReal(ctx);
     }
 
     @Override
@@ -319,28 +365,7 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
         super.visitVarAssignment(ctx);
 
-        for (Symbol symbol1 : vars_aux) {
-            for (Symbol symbol2 : vars_aux) {
-                System.out.println(symbol1.getIdentifier() + " " + symbol2.getIdentifier());
-
-                if (!symbol1.getIdentifier().equals(symbol2.getIdentifier())) {
-                    if (symbol1.getType() == symbol2.getType() && symbol1.getScope().equals(symbol2.getScope())) {
-                        System.out.println(symbol1.getModifiers() + " " + symbol2.getModifiers());
-
-                        if (symbol1.getModifiers().equals(symbol2.getModifiers())) {
-                            symbol2.setUsed(true);
-                        } else {
-                            System.err.println("Error: Modifiers mismatch for variable '" + symbol1.getIdentifier()
-                                    + symbol1.getType()  + " "+ symbol1.getModifiers() +
-                                    "' in scope '" + getCurrentScope() + "' from "
-                                    + symbol2.getIdentifier() + symbol2.getType() + symbol1.getModifiers() + " "+
-                                    "' in scope '" + getCurrentScope() + "'");
-                            //System.exit(1);
-                        }
-                    }
-                }
-            }
-        }
+        
 
         return null;
     }
@@ -357,48 +382,6 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
         }
 
         return null;
-    }
-
-    @Override
-    protected Integer aggregateResult(Integer aggregate, Integer nextResult) {
-        // TODO Auto-generated method stub
-        return super.aggregateResult(aggregate, nextResult);
-    }
-
-    @Override
-    protected Integer defaultResult() {
-        // TODO Auto-generated method stub
-        return super.defaultResult();
-    }
-
-    @Override
-    protected boolean shouldVisitNextChild(RuleNode node, Integer currentResult) {
-        // TODO Auto-generated method stub
-        return super.shouldVisitNextChild(node, currentResult);
-    }
-
-    @Override
-    public Integer visit(ParseTree tree) {
-        // TODO Auto-generated method stub
-        return super.visit(tree);
-    }
-
-    @Override
-    public Integer visitChildren(RuleNode arg0) {
-        // TODO Auto-generated method stub
-        return super.visitChildren(arg0);
-    }
-
-    @Override
-    public Integer visitErrorNode(ErrorNode node) {
-        // TODO Auto-generated method stub
-        return super.visitErrorNode(node);
-    }
-
-    @Override
-    public Integer visitTerminal(TerminalNode node) {
-        // TODO Auto-generated method stub
-        return super.visitTerminal(node);
     }
 
     public void printSymbols() {
