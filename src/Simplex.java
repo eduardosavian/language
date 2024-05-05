@@ -135,8 +135,6 @@ public class Simplex {
         SimplexVisitor visitor = new SimplexVisitor();
 
         visitor.visit(tree);
-        
-        visitor.printSymbols();
     }
 
     private static String readFile(String filePath) {

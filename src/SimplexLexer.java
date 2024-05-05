@@ -24,7 +24,7 @@ public class SimplexLexer extends Lexer {
 		TRUE=34, FALSE=35, NULL=36, MINUS=37, PLUS=38, SLASH=39, STAR=40, MOD=41, 
 		LT=42, GT=43, LT_EQ=44, GT_EQ=45, EQ_EQ=46, NOT_EQ=47, LOGIC_AND=48, LOGIC_OR=49, 
 		LOGIC_NOT=50, LOGIC_XOR=51, OR=52, EQ=53, AND=54, XOR=55, SHIFT_LEFT=56, 
-		SHIFT_RIGHT=57, SL_COMMENT=58, ML_COMMENT=59, ID=60;
+		SHIFT_RIGHT=57, SL_COMMENT=58, ML_COMMENT=59, IDENTIFIER=60;
 	public static String[] channelNames = {
 		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"
 	};
@@ -43,7 +43,7 @@ public class SimplexLexer extends Lexer {
 			"FALSE", "NULL", "MINUS", "PLUS", "SLASH", "STAR", "MOD", "LT", "GT", 
 			"LT_EQ", "GT_EQ", "EQ_EQ", "NOT_EQ", "LOGIC_AND", "LOGIC_OR", "LOGIC_NOT", 
 			"LOGIC_XOR", "OR", "EQ", "AND", "XOR", "SHIFT_LEFT", "SHIFT_RIGHT", "SL_COMMENT", 
-			"ML_COMMENT", "ID"
+			"ML_COMMENT", "IDENTIFIER"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -70,7 +70,7 @@ public class SimplexLexer extends Lexer {
 			"FALSE", "NULL", "MINUS", "PLUS", "SLASH", "STAR", "MOD", "LT", "GT", 
 			"LT_EQ", "GT_EQ", "EQ_EQ", "NOT_EQ", "LOGIC_AND", "LOGIC_OR", "LOGIC_NOT", 
 			"LOGIC_XOR", "OR", "EQ", "AND", "XOR", "SHIFT_LEFT", "SHIFT_RIGHT", "SL_COMMENT", 
-			"ML_COMMENT", "ID"
+			"ML_COMMENT", "IDENTIFIER"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
