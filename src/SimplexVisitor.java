@@ -97,18 +97,18 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
         super.visitExpression(ctx);
 
-        for (Symbol symbol : symbolStack) {
-            symbol.print();
-        }
+        // for (Symbol symbol : symbolStack) {
+        //     symbol.print();
+        // }
 
-        for (Symbol symbol1 : symbolStack) {
-            for (Symbol symbol2 : symbolStack) {
-                if (!symbol1.getType().equals(symbol2.getType())) {
-                    System.err.println("Error: Variable '" + symbol1.getIdentifier() + "' is not the same type");
-                    System.exit(1);
-                }
-            }
-        }
+        // for (Symbol symbol1 : symbolStack) {
+        //     for (Symbol symbol2 : symbolStack) {
+        //         if (!symbol1.getType().equals(symbol2.getType())) {
+        //             System.err.println("Error: Variable '" + symbol1.getIdentifier() + "' is not the same type");
+        //             System.exit(1);
+        //         }
+        //     }
+        // }
 
         // symbolStack.clear();
 
@@ -218,8 +218,17 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
     @Override
     public Integer visitInlineStatement(SimplexParser.InlineStatementContext ctx) {
+        super.visitInlineStatement(ctx);
 
-        return super.visitInlineStatement(ctx);
+
+        for (Symbol symbol : symbolStack) {
+            if (vars.get(vars.size()-1).getType() != symbol.getType()) {
+                System.err.println("Error: Variable '" + vars.get(vars.size()-1).getIdentifier() + "' is not the same type");
+                System.exit(1);
+            }
+        }
+
+        return null;
     }
 
     @Override

@@ -1,3 +1,3 @@
 a : int;
 b : []int;
-c : int = "s" + "s";
+c : float = 10.0 + 10.0;

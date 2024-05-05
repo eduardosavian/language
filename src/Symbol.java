@@ -43,8 +43,8 @@ public class Symbol {
         this.identifier = identifier;
     }
 
-    public Type getType() {
-        return type;
+    public String getType() {
+        return this.type.getType();
     }
 
     public void setType(String type) {
