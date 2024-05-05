@@ -1,7 +1,1 @@
-a : int;
-b : []int;
-k : []string;
-j : int = 0;
-i : int = 0;
-
-b[i] = k[i];
+a : float = 10.0 + 10.0 + 10.0;

@@ -167,5 +167,5 @@ real
 ;
 
 indexing
-	: ID SQUARE_OPEN expression SQUARE_CLOSE
+	: ID (SQUARE_OPEN expression SQUARE_CLOSE)*
 ;
