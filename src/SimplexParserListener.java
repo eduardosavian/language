@@ -117,16 +117,6 @@ public interface SimplexParserListener extends ParseTreeListener {
 	 */
 	void exitTypeExpression(SimplexParser.TypeExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link SimplexParser#typeEstablishment}.
-	 * @param ctx the parse tree
-	 */
-	void enterTypeEstablishment(SimplexParser.TypeEstablishmentContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link SimplexParser#typeEstablishment}.
-	 * @param ctx the parse tree
-	 */
-	void exitTypeEstablishment(SimplexParser.TypeEstablishmentContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link SimplexParser#funcDeclaration}.
 	 * @param ctx the parse tree
 	 */

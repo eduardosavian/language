@@ -49,7 +49,7 @@ public class Symbol {
 
     public void setType(String type) {
         for (Type t : Type.values()) {
-            if (type.equals(t.getType())) {
+            if (type.contains(t.getType())) {
                 this.type = t;
                 return;
             }

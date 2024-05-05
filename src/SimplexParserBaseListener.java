@@ -148,18 +148,6 @@ public class SimplexParserBaseListener implements SimplexParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterTypeEstablishment(SimplexParser.TypeEstablishmentContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitTypeEstablishment(SimplexParser.TypeEstablishmentContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterFuncDeclaration(SimplexParser.FuncDeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}

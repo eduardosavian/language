@@ -76,12 +76,6 @@ public interface SimplexParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitTypeExpression(SimplexParser.TypeExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SimplexParser#typeEstablishment}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTypeEstablishment(SimplexParser.TypeEstablishmentContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link SimplexParser#funcDeclaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

@@ -18,13 +18,23 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
     @Override
     public Integer visitScope(SimplexParser.ScopeContext ctx) {
-        String currentScope = getNextScopeName();
-        scopeStack.push(currentScope);
+        scopeStack.push(getNextScopeName());
         try {
             return super.visitScope(ctx);
         } finally {
+            removeFromSymbol(getNextScopeName());
             scopeStack.pop();
         }
+    }
+
+    private void removeFromSymbol(String scope) {
+        List<Symbol> toRemove = new ArrayList<>();
+        for (Symbol symbol : vars) {
+            if (symbol.getScope().equals(scope)) {
+                toRemove.add(symbol);
+            }
+        }
+        vars.removeAll(toRemove);
     }
 
     private String getNextScopeName() {
@@ -90,6 +100,7 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
         for (String expression : expressionStack) {
             System.out.println(expression);
         }
+
 
         return null;
     }
@@ -253,15 +264,6 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
         return super.visitTypeExpression(ctx);
     }
 
-    
-
-    @Override
-    public Integer visitTypeEstablishment(SimplexParser.TypeEstablishmentContext ctx) {
-        if (var != null) {
-            var.setType(ctx.getText());
-        }
-        return super.visitTypeEstablishment(ctx);
-    }
 
     @Override
     public Integer visitUnary(SimplexParser.UnaryContext ctx) {
