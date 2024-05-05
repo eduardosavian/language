@@ -188,7 +188,7 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
             System.exit(1);
         }
 
-        // super.visitIndexing(ctx);
+        super.visitIndexing(ctx);
 
         // for (Symbol symbol : symbolStack) {
         // }
@@ -223,6 +223,8 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
             }
         }
 
+        symbolStack.clear();
+
         return null;
     }
 
@@ -247,6 +249,7 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
     @Override
     public Integer visitReal(SimplexParser.RealContext ctx) {
+        System.out.println(ctx.getText());
         varAux = new Symbol(getCurrentScope());
         if (ctx.LITERAL_FLOAT() != null) {
             varAux.setIdentifier(ctx.getText());

@@ -1,3 +1,7 @@
 a : int;
-b : [][]int;
-c : int = b[i];
+b : []int;
+k : []string;
+j : int = 0;
+i : int = 0;
+
+b[i] = k[i];
