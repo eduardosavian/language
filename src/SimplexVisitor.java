@@ -12,159 +12,9 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
     private Deque<String> scopeStack = new ArrayDeque<>();
     ArrayList<Symbol> vars = new ArrayList<Symbol>();
     private Integer scopeCounter = 0;
+    private Symbol var = null;
+    private Deque<String> expressionStack = new ArrayDeque<>();
 
-    @Override
-    public Integer visitBitShift(SimplexParser.BitShiftContext ctx) {
-
-        return super.visitBitShift(ctx);
-    }
-
-    @Override
-    public Integer visitBreakStatement(SimplexParser.BreakStatementContext ctx) {
-
-        return super.visitBreakStatement(ctx);
-    }
-
-    @Override
-    public Integer visitComparison(SimplexParser.ComparisonContext ctx) {
-
-        return super.visitComparison(ctx);
-    }
-
-    @Override
-    public Integer visitContinueStatement(SimplexParser.ContinueStatementContext ctx) {
-
-        return super.visitContinueStatement(ctx);
-    }
-
-    @Override
-    public Integer visitDoFor(SimplexParser.DoForContext ctx) {
-
-        return super.visitDoFor(ctx);
-    }
-
-    @Override
-    public Integer visitExprStatement(SimplexParser.ExprStatementContext ctx) {
-
-        return super.visitExprStatement(ctx);
-    }
-
-    @Override
-    public Integer visitExpression(SimplexParser.ExpressionContext ctx) {
-
-        return super.visitExpression(ctx);
-    }
-
-    @Override
-    public Integer visitExpressionList(SimplexParser.ExpressionListContext ctx) {
-
-        return super.visitExpressionList(ctx);
-    }
-
-    @Override
-    public Integer visitFactor(SimplexParser.FactorContext ctx) {
-
-        return super.visitFactor(ctx);
-    }
-
-    @Override
-    public Integer visitField(SimplexParser.FieldContext ctx) {
-
-        return super.visitField(ctx);
-    }
-
-    @Override
-    public Integer visitFieldList(SimplexParser.FieldListContext ctx) {
-
-        return super.visitFieldList(ctx);
-    }
-
-    @Override
-    public Integer visitFuncDeclaration(SimplexParser.FuncDeclarationContext ctx) {
-        // TODO Auto-generated method stub
-
-        return super.visitFuncDeclaration(ctx);
-    }
-
-    @Override
-    public Integer visitFunctionCall(SimplexParser.FunctionCallContext ctx) {
-        // TODO Auto-generated method stub
-
-        return super.visitFunctionCall(ctx);
-    }
-
-    @Override
-    public Integer visitGroup(SimplexParser.GroupContext ctx) {
-        // TODO Auto-generated method stub
-
-        return super.visitGroup(ctx);
-    }
-
-    public Integer visitIdentifierList(SimplexParser.IdentifierListContext ctx) {
-
-        return super.visitIdentifierList(ctx);
-    }
-
-    @Override
-    public Integer visitIfStatement(SimplexParser.IfStatementContext ctx) {
-
-        return super.visitIfStatement(ctx);
-    }
-
-    @Override
-    public Integer visitIndexing(SimplexParser.IndexingContext ctx) {
-
-        return super.visitIndexing(ctx);
-    }
-
-    @Override
-    public Integer visitInlineStatement(SimplexParser.InlineStatementContext ctx) {
-
-        return super.visitInlineStatement(ctx);
-    }
-
-    @Override
-    public Integer visitInteger(SimplexParser.IntegerContext ctx) {
-
-        return super.visitInteger(ctx);
-    }
-
-    @Override
-    public Integer visitLogicConjunction(SimplexParser.LogicConjunctionContext ctx) {
-
-        return super.visitLogicConjunction(ctx);
-    }
-
-    @Override
-    public Integer visitLogicDisjunction(SimplexParser.LogicDisjunctionContext ctx) {
-
-        return super.visitLogicDisjunction(ctx);
-    }
-
-    @Override
-    public Integer visitPrimary(SimplexParser.PrimaryContext ctx) {
-        System.out.println("Primary: " + ctx.getText());
-
-        return super.visitPrimary(ctx);
-    }
-
-    @Override
-    public Integer visitProgram(SimplexParser.ProgramContext ctx) {
-
-        return super.visitProgram(ctx);
-    }
-
-    @Override
-    public Integer visitReal(SimplexParser.RealContext ctx) {
-
-        return super.visitReal(ctx);
-    }
-
-    @Override
-    public Integer visitReturnStatement(SimplexParser.ReturnStatementContext ctx) {
-
-        return super.visitReturnStatement(ctx);
-    }
 
     @Override
     public Integer visitScope(SimplexParser.ScopeContext ctx) {
@@ -193,249 +43,282 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
         return "global";
     }
 
+    
     @Override
-    public Integer visitSimpleFor(SimplexParser.SimpleForContext ctx) {
-
-        return super.visitSimpleFor(ctx);
+    public Integer visitBitShift(SimplexParser.BitShiftContext ctx) {
+        // TODO Auto-generated method stub
+        return super.visitBitShift(ctx);
     }
 
     @Override
-    public Integer visitSliceIndicator(SimplexParser.SliceIndicatorContext ctx) {
-
-        return super.visitSliceIndicator(ctx);
+    public Integer visitBreakStatement(SimplexParser.BreakStatementContext ctx) {
+        // TODO Auto-generated method stub
+        return super.visitBreakStatement(ctx);
     }
 
     @Override
-    public Integer visitStatement(SimplexParser.StatementContext ctx) {
-
-        return super.visitStatement(ctx);
+    public Integer visitComparison(SimplexParser.ComparisonContext ctx) {
+        return super.visitComparison(ctx);
     }
 
     @Override
-    public Integer visitTerm(SimplexParser.TermContext ctx) {
-
-        return super.visitTerm(ctx);
+    public Integer visitContinueStatement(SimplexParser.ContinueStatementContext ctx) {
+        // TODO Auto-generated method stub
+        return super.visitContinueStatement(ctx);
     }
 
     @Override
-    public Integer visitTripleFor(SimplexParser.TripleForContext ctx) {
-
-        return super.visitTripleFor(ctx);
+    public Integer visitDoFor(SimplexParser.DoForContext ctx) {
+        // TODO Auto-generated method stub
+        return super.visitDoFor(ctx);
     }
 
     @Override
-    public Integer visitTypeExpression(SimplexParser.TypeExpressionContext ctx) {
-
-        return super.visitTypeExpression(ctx);
+    public Integer visitExprStatement(SimplexParser.ExprStatementContext ctx) {
+        // TODO Auto-generated method stub
+        return super.visitExprStatement(ctx);
     }
 
     @Override
-    public Integer visitUnary(SimplexParser.UnaryContext ctx) {
+    public Integer visitExpression(SimplexParser.ExpressionContext ctx) {
+        if (var != null) {
+            var.setIsInitialized(true);
+        }
 
-        return super.visitUnary(ctx);
+        super.visitExpression(ctx);
+
+        for (String expression : expressionStack) {
+            System.out.println(expression);
+        }
+
+        return null;
     }
 
     @Override
-    public Integer visitVarAssignment(SimplexParser.VarAssignmentContext ctx) {
-        String ctxText = ctx.getText();
-        Integer childCount = ctx.getChildCount();
-        //System.out.println("Text: " + ctxText + "\nChild Count: " + childCount.toString());
+    public Integer visitExpressionList(SimplexParser.ExpressionListContext ctx) {
+        // TODO Auto-generated method stub
+        return super.visitExpressionList(ctx);
+    }
 
-        ParseTree ids = ctx.getChild(0);
-        String idsText = ids.getText();
-        Integer idsCount = ids.getChildCount();
+    @Override
+    public Integer visitFactor(SimplexParser.FactorContext ctx) {
+        return super.visitFactor(ctx);
+    }
 
-        ParseTree expressions = null;
-        Integer expressionsCount;
-        String expressionsText;
+    @Override
+    public Integer visitField(SimplexParser.FieldContext ctx) {
+        // TODO Auto-generated method stub
+        return super.visitField(ctx);
+    }
 
-        expressions = ctx.getChild(2);
-        expressionsCount = expressions.getChildCount();
-        expressionsText = expressions.getText();
+    @Override
+    public Integer visitFieldList(SimplexParser.FieldListContext ctx) {
+        // TODO Auto-generated method stub
+        return super.visitFieldList(ctx);
+    }
 
-        if (idsCount != expressionsCount) {
-            System.err.println(
-                    "The ids list size '" + idsText
-                            + "' is different from expressions list size " + expressionsText
-                            + "'");
+    @Override
+    public Integer visitFuncDeclaration(SimplexParser.FuncDeclarationContext ctx) {
+        // TODO Auto-generated method stub
+        return super.visitFuncDeclaration(ctx);
+    }
+
+    @Override
+    public Integer visitFunctionCall(SimplexParser.FunctionCallContext ctx) {
+        // TODO Auto-generated method stub
+        return super.visitFunctionCall(ctx);
+    }
+
+    @Override
+    public Integer visitGroup(SimplexParser.GroupContext ctx) {
+        // TODO Auto-generated method stub
+        return super.visitGroup(ctx);
+    }
+
+    @Override
+    public Integer visitIdentifierList(SimplexParser.IdentifierListContext ctx) {
+
+        if (isDeclared(ctx.getText(), getCurrentScope())) {
+            System.err.println("Error: Variable '" + ctx.getText() + "' already exists in scope '" + getCurrentScope() + "'");
             System.exit(1);
         }
 
-        Integer varsSize = idsCount;
-
-        String currentScope = getCurrentScope();
-
-        for (int i = 0; i < varsSize; i++) {
-            if (i % 2 == 0) {
-                String id = ids.getChild(i).getText();
-                String expression = expressions.getChild(i).getText();
-                //System.out.println("ID: " + id + " Expression: " + expression);
-
-                if (!isVariableDefined(id, currentScope)) {
-                    System.err.println("Error: Variable '" + id + "' doesn`t exists in scope '" + currentScope + "'");
-                    System.exit(1);
-                }
-
-                
-
-                // if (!isVariableDefined(expression, currentScope)) {
-                //     System.err.println("Error: Variable '" + id + "' doesn`t exists in scope '" + currentScope + "'");
-                //     System.exit(1);
-                // }
-
-
-                // areVariablesSameTypeInScope(id1, currentScope1, id2, currentScope2)
-            }
+        if (var != null) {
+            var.setIdentifier(ctx.getText());
         }
-        System.out.println("Var Assignment: " + ctx.getText());
 
-        return super.visitVarAssignment(ctx);
+        return super.visitIdentifierList(ctx);
     }
 
-    private Boolean isVariableDefined(String identifier, String scope) {
+    private Boolean isDeclared(String identifier, String currentScope) {
         for (Symbol symbol : vars) {
-            if (symbol.getIdentifier().equals(identifier) && symbol.getScope().equals(scope)) {
+            if (symbol.getIdentifier().equals(identifier) && symbol.getScope().equals(currentScope)) {
                 return true;
             }
         }
         return false;
     }
 
-    // private Boolean areVariablesSameTypeInScope(String id1, currentScope1, id2,
-    // currentScope2) {
+    @Override
+    public Integer visitIfStatement(SimplexParser.IfStatementContext ctx) {
+        // TODO Auto-generated method stub
+        return super.visitIfStatement(ctx);
+    }
 
-    // return false;
-    // }
+    @Override
+    public Integer visitIndexing(SimplexParser.IndexingContext ctx) {
+        // TODO Auto-generated method stub
+        return super.visitIndexing(ctx);
+    }
+
+    @Override
+    public Integer visitInlineStatement(SimplexParser.InlineStatementContext ctx) {
+        
+        return super.visitInlineStatement(ctx);
+    }
+
+    @Override
+    public Integer visitInteger(SimplexParser.IntegerContext ctx) {
+        
+        return super.visitInteger(ctx);
+    }
+
+    @Override
+    public Integer visitLogicConjunction(SimplexParser.LogicConjunctionContext ctx) {
+        return super.visitLogicConjunction(ctx);
+    }
+
+    @Override
+    public Integer visitLogicDisjunction(SimplexParser.LogicDisjunctionContext ctx) {
+        return super.visitLogicDisjunction(ctx);
+    }
+
+    @Override
+    public Integer visitPrimary(SimplexParser.PrimaryContext ctx) {
+        // TODO Auto-generated method stub
+        return super.visitPrimary(ctx);
+    }
+
+    @Override
+    public Integer visitProgram(SimplexParser.ProgramContext ctx) {
+        // TODO Auto-generated method stub
+        return super.visitProgram(ctx);
+    }
+
+    @Override
+    public Integer visitReal(SimplexParser.RealContext ctx) {
+        // TODO Auto-generated method stub
+        return super.visitReal(ctx);
+    }
+
+    @Override
+    public Integer visitReturnStatement(SimplexParser.ReturnStatementContext ctx) {
+        // TODO Auto-generated method stub
+        return super.visitReturnStatement(ctx);
+    }
+
+    @Override
+    public Integer visitSimpleFor(SimplexParser.SimpleForContext ctx) {
+        // TODO Auto-generated method stub
+        return super.visitSimpleFor(ctx);
+    }
+
+    @Override
+    public Integer visitSliceIndicator(SimplexParser.SliceIndicatorContext ctx) {
+        var.setModifiers(ctx.getText());
+        return super.visitSliceIndicator(ctx);
+    }
+
+    @Override
+    public Integer visitStatement(SimplexParser.StatementContext ctx) {
+        // TODO Auto-generated method stub
+        return super.visitStatement(ctx);
+    }
+
+    @Override
+    public Integer visitTerm(SimplexParser.TermContext ctx) {
+        // TODO Auto-generated method stub
+        return super.visitTerm(ctx);
+    }
+
+    @Override
+    public Integer visitTripleFor(SimplexParser.TripleForContext ctx) {
+        // TODO Auto-generated method stub
+        return super.visitTripleFor(ctx);
+    }
+
+    @Override
+    public Integer visitTypeExpression(SimplexParser.TypeExpressionContext ctx) {
+        
+        return super.visitTypeExpression(ctx);
+    }
+
+    @Override
+    public Integer visitUnary(SimplexParser.UnaryContext ctx) {
+        return super.visitUnary(ctx);
+    }
+
+    @Override
+    public Integer visitVarAssignment(SimplexParser.VarAssignmentContext ctx) {
+        
+        return super.visitVarAssignment(ctx);
+    }
 
     @Override
     public Integer visitVarDeclaration(SimplexParser.VarDeclarationContext ctx) {
-        String ctxText = ctx.getText();
-        Integer childCount = ctx.getChildCount();
-        // System.out.println("Text: " + ctxText + "\nChild Count: " +
-        // childCount.toString());
-
-        ParseTree ids = ctx.getChild(0);
-        String idsText = ids.getText();
-        Integer idsCount = ids.getChildCount();
-
-        ParseTree type = ctx.getChild(2);
-        String typeText = type.getText();
-        System.out.println(typeText);
-
-        ParseTree expressions = null;
-        Integer expressionsCount;
-        String expressionsText;
-
-        Boolean expressionsExist = (childCount == 5);
-
-        if (expressionsExist) {
-            expressions = ctx.getChild(4);
-            expressionsCount = expressions.getChildCount();
-            expressionsText = expressions.getText();
-
-            if (idsCount != expressionsCount) {
-                System.err.println(
-                        "The ids list size '" + idsText
-                                + "' is different from expressions list size " + expressionsText
-                                + "'");
-                System.exit(1);
-            }
-        }
+        var = new Symbol(getCurrentScope());
         
-
-        Integer varsSize = idsCount;
-
-        String currentScope = getCurrentScope();
-
-        for (int i = 0; i < varsSize; i++) {
-            if (i % 2 == 0) {
-                String id = ids.getChild(i).getText();
-                System.out.println("ID: " + id + " Type: " + typeText);
-
-                if (isVariableRedeclaredInScope(id, currentScope)) {
-                    System.err.println("Error: Variable '" + id + "' already exists in scope '" + currentScope + "'");
-                    System.exit(1);
-                }
-
-                Symbol symbol = new Symbol(id, typeText, expressionsExist, getCurrentScope());
-                vars.add(symbol);
-            }
+        super.visitVarDeclaration(ctx);
+        
+        if (var != null) {
+            vars.add(var);
+            var = null;
         }
 
-        return super.visitVarDeclaration(ctx);
-    }
 
-    private boolean isVariableRedeclaredInScope(String identifier, String scope) {
-        for (Symbol symbol : vars) {
-            if (symbol.getIdentifier().equals(identifier) && scope.contains(symbol.getScope())) {
-                System.err.println(
-                        "Error: Variable redeclaration is forbidden, '" + identifier + "' already exists in scope '."
-                                + scope + "'. Original declaretion in scope'" + symbol.getScope() + "'");
-                System.exit(1);
-            }
-        }
-        return false;
+        return null;
     }
 
     @Override
     protected Integer aggregateResult(Integer aggregate, Integer nextResult) {
-
+        // TODO Auto-generated method stub
         return super.aggregateResult(aggregate, nextResult);
     }
 
     @Override
     protected Integer defaultResult() {
-
+        // TODO Auto-generated method stub
         return super.defaultResult();
     }
 
     @Override
     protected boolean shouldVisitNextChild(RuleNode node, Integer currentResult) {
-
+        // TODO Auto-generated method stub
         return super.shouldVisitNextChild(node, currentResult);
     }
 
     @Override
     public Integer visit(ParseTree tree) {
-
+        // TODO Auto-generated method stub
         return super.visit(tree);
     }
 
     @Override
     public Integer visitChildren(RuleNode arg0) {
-
+        // TODO Auto-generated method stub
         return super.visitChildren(arg0);
     }
 
     @Override
     public Integer visitErrorNode(ErrorNode node) {
-
+        // TODO Auto-generated method stub
         return super.visitErrorNode(node);
     }
 
     @Override
     public Integer visitTerminal(TerminalNode node) {
-
+        // TODO Auto-generated method stub
         return super.visitTerminal(node);
-    }
-
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-
-        return super.clone();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-
-        return super.equals(obj);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    protected void finalize() throws Throwable {
-
-        super.finalize();
     }
 
     public void printSymbols() {

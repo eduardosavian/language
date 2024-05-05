@@ -25,36 +25,16 @@ public class Symbol {
     private Boolean isParameter = false;
     private Boolean isFunction = false;
 
-    Symbol(String identifier, String type, Boolean expressionsExist, String Scope) {
-        this.identifier = identifier;
-
-        Boolean typeExists = false;
-
-        for (Type typeSymbol : Type.values()) {
-            if (type.contains(typeSymbol.getType())) {
-                this.type = typeSymbol;
-                this.modifiers = type.replace(typeSymbol.getType(), "");
-                typeExists = true;
-                break;
-            }
-        }
-
-        if (!typeExists) {
-            System.err.println(
-                    "The id '" + identifier
-                            + type + "' type doesn't exist");
-            System.exit(1);
-        }
-
-        this.isInitialized = expressionsExist;
-        
+    Symbol(String Scope) {
+        this.identifier = "";
+        this.type = Symbol.Type.REAL ;
+        this.isInitialized = false;
         this.used = false;
         this.scope = Scope;
         this.isParameter = false;
         this.isFunction = false;
-
     }
-
+    
     public String getIdentifier() {
         return identifier;
     }
@@ -69,14 +49,6 @@ public class Symbol {
 
     public void setType(Type type) {
         this.type = type;
-    }
-
-    public Boolean getIsInitialized() {
-        return isInitialized;
-    }
-
-    public void setISInitialized(Boolean initialized) {
-        this.isInitialized = initialized;
     }
 
     public Boolean getUsed() {
@@ -112,6 +84,18 @@ public class Symbol {
     }
 
     
+    public void setIsInitialized(Boolean isInitialized) {
+        this.isInitialized = isInitialized;
+    }
+
+    public String getModifiers() {
+        return modifiers;
+    }
+
+    public void setModifiers(String modifiers) {
+        this.modifiers += modifiers;
+    }
+
     public void print() {
         System.out.print("Identifier: " + identifier);
         System.out.print(" | ");

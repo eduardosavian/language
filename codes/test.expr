@@ -1,5 +1,7 @@
 a : int = 0;
 c : int = 10;
+
+k : []int;
 d : [][]int;
 
-c = a;
+k[i] << f[i]; 
