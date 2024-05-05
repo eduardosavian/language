@@ -95,8 +95,6 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
             var.setIsInitialized(true);
         }
 
-        varAux = new Symbol(getCurrentScope());
-
         super.visitExpression(ctx);
 
         for (Symbol symbol : symbolStack) {
@@ -112,8 +110,7 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
             }
         }
 
-
-        symbolStack.clear();        
+        // symbolStack.clear();
 
         return null;
     }
@@ -195,16 +192,18 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
         // var symbolAux = searchSymbol(ctx.ID().getText(), getCurrentScope());
         // if (symbolAux != null) {
 
-        //     symbolAux.setLessModifiers(ctx.SQUARE_OPEN().getText() + ctx.SQUARE_CLOSE().getText());
-        //     vars_aux.add(symbolAux);
-        //     symbolStack.push(symbolAux);
-        //     for (Symbol symbol : symbolStack) {
-        //         symbol.print();
-        //     }
+        // symbolAux.setLessModifiers(ctx.SQUARE_OPEN().getText() +
+        // ctx.SQUARE_CLOSE().getText());
+        // vars_aux.add(symbolAux);
+        // symbolStack.push(symbolAux);
+        // for (Symbol symbol : symbolStack) {
+        // symbol.print();
+        // }
         // } else {
-        //     System.err.println("Error: Variable '" + ctx.ID().getText() + "' not declared in scope '"
-        //             + getCurrentScope() + "'");
-        //     System.exit(1);
+        // System.err.println("Error: Variable '" + ctx.ID().getText() + "' not declared
+        // in scope '"
+        // + getCurrentScope() + "'");
+        // System.exit(1);
         // }
 
         // super.visitIndexing(ctx);
@@ -214,15 +213,6 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
         // symbolStack.pop();
 
-        return null; 
-    }
-
-    private Symbol searchSymbol(String identifier, String scope) {
-        for (Symbol symbol : vars) {
-            if (symbol.getIdentifier().equals(identifier) && scope.contains(symbol.getScope())) {
-                return symbol;
-            }
-        }
         return null;
     }
 
@@ -234,13 +224,13 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
     @Override
     public Integer visitInteger(SimplexParser.IntegerContext ctx) {
+        varAux = new Symbol(getCurrentScope());
         if (ctx.LITERAL_BIN() != null) {
             varAux.setIdentifier(ctx.getText());
             varAux.setType("int");
         } else if (ctx.LITERAL_INT() != null) {
             varAux.setIdentifier(ctx.getText());
             varAux.setType("int");
-            System.out.println("Int " + ctx.getText());
         } else if (ctx.LITERAL_HEX() != null) {
             varAux.setIdentifier(ctx.getText());
             varAux.setType("int");
@@ -251,18 +241,17 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
         return super.visitInteger(ctx);
     }
 
-
     @Override
     public Integer visitReal(SimplexParser.RealContext ctx) {
+        varAux = new Symbol(getCurrentScope());
         if (ctx.LITERAL_FLOAT() != null) {
             varAux.setIdentifier(ctx.getText());
             varAux.setType("real");
         }
         symbolStack.push(varAux);
-        
+
         return super.visitReal(ctx);
     }
-
 
     @Override
     public Integer visitLogicConjunction(SimplexParser.LogicConjunctionContext ctx) {
@@ -276,26 +265,36 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
     @Override
     public Integer visitPrimary(SimplexParser.PrimaryContext ctx) {
-        if (ctx.ID() != null) {
-            System.out.println("ID " + ctx.getText());
-            if (!isDeclared(ctx.ID().getText(), getCurrentScope())) {
-                System.err.println("Error: Variable '" + ctx.ID().getText() + "' not declared in scope '"
-                        + getCurrentScope() + "'");
-                System.exit(1);
+
+        varAux = new Symbol(getCurrentScope());
+        System.out.println("Primary " + ctx.getText());
+
+        if (ctx != null) {
+            if (ctx.ID() != null) {
+                System.out.println("ID " + ctx.getText());
+                if (!isDeclared(ctx.ID().getText(), getCurrentScope())) {
+                    System.err.println("Error: Variable '" + ctx.ID().getText() + "' not declared in scope '"
+                            + getCurrentScope() + "'");
+                    System.exit(1);
+                }
+
+                Symbol symbol_aux = searchSymbol(ctx.ID().getText(), getCurrentScope());
+
+                vars_aux.add(symbol_aux);
+                symbolStack.push(varAux);
+            } else if (ctx.LITERAL_RUNE() != null) {
+                System.out.println("Rune " + ctx.getText());
+                symbolStack.push(varAux);
+            } else if (ctx.LITERAL_STRING() != null) {
+                varAux.setIdentifier(ctx.getText());
+                varAux.setType("string");
+                symbolStack.push(varAux);
+            } else if (ctx.NIL() != null) {
+                System.out.println("Null " + ctx.getText());
+                
+                symbolStack.push(varAux);
             }
 
-            Symbol symbol_aux = searchSymbol(ctx.ID().getText(), getCurrentScope());
-
-            vars_aux.add(symbol_aux);
-        } else if (ctx.LITERAL_RUNE() != null) {
-            System.out.println("Rune " + ctx.getText());
-            super.visitPrimary(ctx);
-        } else if (ctx.LITERAL_STRING() != null) {
-            System.out.println("String " + ctx.getText());
-            super.visitPrimary(ctx);
-        } else if (ctx.NIL() != null) {
-            System.out.println("Null " + ctx.getText());
-            super.visitPrimary(ctx);
         }
 
         return super.visitPrimary(ctx);
@@ -365,8 +364,6 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
         super.visitVarAssignment(ctx);
 
-        
-
         return null;
     }
 
@@ -381,6 +378,15 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
             var = null;
         }
 
+        return null;
+    }
+
+    private Symbol searchSymbol(String identifier, String scope) {
+        for (Symbol symbol : vars) {
+            if (symbol.getIdentifier().equals(identifier) && scope.contains(symbol.getScope())) {
+                return symbol;
+            }
+        }
         return null;
     }
 

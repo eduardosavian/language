@@ -136,7 +136,7 @@ public class Simplex {
 
         visitor.visit(tree);
         
-        visitor.printSymbols();
+        //visitor.printSymbols();
         //visitor.PrintSymbolsAux();
     }
 
