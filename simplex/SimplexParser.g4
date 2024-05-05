@@ -57,8 +57,11 @@ sliceIndicator
 typeExpression
 	: sliceIndicator typeExpression
 	| CARET typeExpression
-	| ID
+	| typeEstablishment
 ;
+
+typeEstablishment
+	: ID;
 
 funcDeclaration
 	: FUN ID PAREN_OPEN fieldList? PAREN_CLOSE (RIGHT_ARROW typeExpression)? scope

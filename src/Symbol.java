@@ -47,8 +47,15 @@ public class Symbol {
         return type;
     }
 
-    public void setType(Type type) {
-        this.type = type;
+    public void setType(String type) {
+        for (Type t : Type.values()) {
+            if (type.equals(t.getType())) {
+                this.type = t;
+                return;
+            }
+        }
+
+        System.out.println("Error: Invalid type '" + type + "'");
     }
 
     public Boolean getUsed() {

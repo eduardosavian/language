@@ -152,7 +152,7 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
     private Boolean isDeclared(String identifier, String currentScope) {
         for (Symbol symbol : vars) {
-            if (symbol.getIdentifier().equals(identifier) && symbol.getScope().equals(currentScope)) {
+            if (symbol.getIdentifier().equals(identifier) && currentScope.contains(symbol.getScope())) {
                 return true;
             }
         }
@@ -251,6 +251,16 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
     public Integer visitTypeExpression(SimplexParser.TypeExpressionContext ctx) {
         
         return super.visitTypeExpression(ctx);
+    }
+
+    
+
+    @Override
+    public Integer visitTypeEstablishment(SimplexParser.TypeEstablishmentContext ctx) {
+        if (var != null) {
+            var.setType(ctx.getText());
+        }
+        return super.visitTypeEstablishment(ctx);
     }
 
     @Override

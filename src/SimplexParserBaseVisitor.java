@@ -94,6 +94,13 @@ public class SimplexParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> imp
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitTypeEstablishment(SimplexParser.TypeEstablishmentContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitFuncDeclaration(SimplexParser.FuncDeclarationContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
