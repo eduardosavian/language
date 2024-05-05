@@ -110,7 +110,7 @@ public class Symbol {
         return modifiers;
     }
 
-    public void setModifiers(String modifiers) {
+    public void setMoreModifiers(String modifiers) {
         this.modifiers += modifiers;
     }
 
