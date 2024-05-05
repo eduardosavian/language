@@ -12,6 +12,9 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
     private Deque<String> scopeStack = new ArrayDeque<>();
     private Integer scopeCounter = 0;
     private Deque<String> operationStack = new ArrayDeque<>();
+    private Deque<Symbol> declarationStack = new ArrayDeque<>();
+
+    //private Deque
 
     ArrayList<Symbol> vars = new ArrayList<Symbol>();
     Symbol var = null;
@@ -93,21 +96,38 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
     @Override
     public Integer visitIdentifierList(SimplexParser.IdentifierListContext ctx) {
-        var.setIdentifier(ctx.getText());
         
         return super.visitIdentifierList(ctx);
     }
 
-    
+    @Override
+    public Integer visitIdentifier(SimplexParser.IdentifierContext ctx) {
+        var = searchSymbol(ctx.ID().getText(), getCurrentScope());
+        if (var != null) {
+            System.err.println("Error: Variable '" + ctx.ID().getText() + "' declared in scope '" + getCurrentScope() + "'");
+            System.exit(1);
+        } else {
+            var = new Symbol(getCurrentScope());
+            var.setIdentifier(ctx.ID().getText());
+        }
+
+        declarationStack.push(var);
+        return super.visitIdentifier(ctx);
+    }
 
     @Override
     public Integer visitSliceIndicator(SimplexParser.SliceIndicatorContext ctx) {
-        var.setMoreModifiers(ctx.SQUARE_OPEN().getText() + ctx.SQUARE_CLOSE().getText());
+        for(Symbol symbol : declarationStack){
+            symbol.setMoreModifiers(ctx.SQUARE_OPEN().getText() + ctx.SQUARE_CLOSE().getText());
+        }
         return super.visitSliceIndicator(ctx);
     }
 
     @Override
     public Integer visitTypeExpression(SimplexParser.TypeExpressionContext ctx) {
+        for(Symbol symbol : declarationStack){
+            symbol.setType(ctx.getText());
+        }
         
         return super.visitTypeExpression(ctx);
     }
@@ -118,9 +138,8 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
         super.visitVarDeclaration(ctx);
 
-        if (var != null) {
-            vars.add(var);
-            var = null;
+        for (Symbol symbol : declarationStack) {
+            vars.add(symbol);
         }
 
         return null;

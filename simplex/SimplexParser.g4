@@ -43,7 +43,11 @@ varDeclaration
 ;
 
 identifierList
-	: ID (COMMA ID)*
+	: identifier (COMMA identifier)*
+;
+
+identifier:
+	ID
 ;
 
 varAssignment

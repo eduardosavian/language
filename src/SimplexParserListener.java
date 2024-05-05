@@ -87,6 +87,16 @@ public interface SimplexParserListener extends ParseTreeListener {
 	 */
 	void exitIdentifierList(SimplexParser.IdentifierListContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link SimplexParser#identifier}.
+	 * @param ctx the parse tree
+	 */
+	void enterIdentifier(SimplexParser.IdentifierContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SimplexParser#identifier}.
+	 * @param ctx the parse tree
+	 */
+	void exitIdentifier(SimplexParser.IdentifierContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link SimplexParser#varAssignment}.
 	 * @param ctx the parse tree
 	 */

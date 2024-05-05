@@ -58,6 +58,12 @@ public interface SimplexParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIdentifierList(SimplexParser.IdentifierListContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link SimplexParser#identifier}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIdentifier(SimplexParser.IdentifierContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link SimplexParser#varAssignment}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
