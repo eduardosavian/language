@@ -3,8 +3,7 @@ parser grammar SimplexParser;
 options { tokenVocab=SimplexLexer; }
 
 program
-	: debuger
-	| statement*
+	: statement*
 ;
 
 inlineStatement
@@ -12,8 +11,8 @@ inlineStatement
 	| breakStatement
 	| continueStatement
 	| exprStatement
-	| varDeclaration
-	| varAssignment
+	| variableDeclaration
+	| variableAssignment
 ;
 
 returnStatement
@@ -38,11 +37,7 @@ statement
 	| scope
 ;
 
-debuger
-	: DEBUG
-;
-
-varDeclaration
+variableDeclaration
 	: identifierList COLON typeExpression (EQ expressionList)?
 ;
 
@@ -50,7 +45,7 @@ identifierList
 	: ID (COMMA ID)*
 ;
 
-varAssignment
+variableAssignment
 	: expressionList EQ expressionList
 ;
 
