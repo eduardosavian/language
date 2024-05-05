@@ -1,1 +1,1 @@
-a,b : string = "";
+a,b,c : string = 10;

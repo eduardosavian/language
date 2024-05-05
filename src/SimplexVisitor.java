@@ -14,7 +14,6 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
     private Deque<String> operationStack = new ArrayDeque<>();
     private Deque<Symbol> declarationStack = new ArrayDeque<>();
 
-    //private Deque
 
     ArrayList<Symbol> vars = new ArrayList<Symbol>();
     Symbol var = null;
@@ -56,49 +55,181 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
         return "global";
     }
 
+    @Override
+    public Integer visitExpression(SimplexParser.ExpressionContext ctx) {
+        // TODO Auto-generated method stub
+        return super.visitExpression(ctx);
+    }
+
+
+
+    @Override
+    public Integer visitExpressionList(SimplexParser.ExpressionListContext ctx) {
+        super.visitExpressionList(ctx);
+        
+        for (String name : operationStack) {
+            System.out.println(name);
+        }
+        
+        operationStack.clear();
+
+        return 1;
+    }
+
+    
+
+    @Override
+    public Integer visitBitShift(SimplexParser.BitShiftContext ctx) {
+        
+        if(ctx.SHIFT_LEFT() != null){
+            operationStack.push("<<");
+        } else if(ctx.SHIFT_RIGHT() != null){
+            operationStack.push(">>");
+        }
+        return super.visitBitShift(ctx);
+    }
+
+    @Override
+    public Integer visitComparison(SimplexParser.ComparisonContext ctx) {
+        if(ctx.EQ_EQ() != null){
+            operationStack.push("==");
+        } else if(ctx.NOT_EQ() != null){
+            operationStack.push("!=");
+        } else if(ctx.GT() != null){
+            operationStack.push(">");
+        } else if(ctx.GT_EQ() != null){
+            operationStack.push(">=");
+        } else if(ctx.LT() != null){
+            operationStack.push("<");
+        } else if(ctx.LT_EQ() != null){
+            operationStack.push("<=");
+        }
+        return super.visitComparison(ctx);
+    }
+
+    @Override
+    public Integer visitFactor(SimplexParser.FactorContext ctx) {
+        System.out.println(ctx.getText());
+        System.out.println(ctx.MOD() != null);
+        if(ctx.MOD() != null) {
+            operationStack.push("%");
+        } else if(ctx.SLASH() != null) {
+            operationStack.push("/");
+        } else if(ctx.STAR() != null) {
+            operationStack.push("*");
+        } else if(ctx.AND() != null) {
+            operationStack.push("+");
+        }
+        return super.visitFactor(ctx);
+    }
+
+
+    @Override
+    public Integer visitUnary(SimplexParser.UnaryContext ctx) {
+        if(ctx.MINUS() != null) {
+            operationStack.push("-");
+        } else if(ctx.PLUS()  != null) {
+            operationStack.push("+");
+        } else if(ctx.XOR() != null) {
+            operationStack.push("!");
+        } else if (ctx.LOGIC_NOT() != null){
+            
+        }
+        return super.visitUnary(ctx);
+    }
+    
+
+    @Override
+    public Integer visitTerm(SimplexParser.TermContext ctx) {
+        if(ctx.PLUS() != null) {
+            operationStack.push("+");
+        } else if(ctx.MINUS() != null) {
+            operationStack.push("-");
+        } else if(ctx.OR() != null) {
+            operationStack.push("||");
+        } else if(ctx.XOR() != null) {
+            operationStack.push("~");
+        }
+        return super.visitTerm(ctx);
+    }
+
+    @Override
+    public Integer visitLogicConjunction(SimplexParser.LogicConjunctionContext ctx) {
+        if (ctx.LOGIC_AND() != null) {
+            operationStack.push("&&");
+        }
+        return super.visitLogicConjunction(ctx);
+    }
+
+    @Override
+    public Integer visitLogicDisjunction(SimplexParser.LogicDisjunctionContext ctx) {
+        if(ctx.LOGIC_OR() != null){
+            operationStack.push("||");
+        } else if(ctx.LOGIC_XOR() != null){
+            operationStack.push("^^");
+        }
+        return super.visitLogicDisjunction(ctx);
+    }
+
+    @Override
+    public Integer visitInlineStatement(SimplexParser.InlineStatementContext ctx) {
+        super.visitInlineStatement(ctx);
+
+        return 1;
+    }
 
     @Override
     public Integer visitInteger(SimplexParser.IntegerContext ctx) {
         if(ctx.LITERAL_BIN() != null){
-            System.out.println("Literal Bin: " + ctx.LITERAL_BIN().getText());
+            var.setType("int");
         } else if(ctx.LITERAL_INT() != null){
-            System.out.println("Literal Int: " + ctx.LITERAL_INT().getText());
+            var.setType("int");
         } else if(ctx.LITERAL_HEX() != null){
-            System.out.println("Literal Hex: " + ctx.LITERAL_HEX().getText());
+            var.setType("int");
         }
+
+        operationStack.push("int");
+
         return super.visitInteger(ctx);
     }
 
     @Override
     public Integer visitPrimary(SimplexParser.PrimaryContext ctx) {
         if(ctx.ID() != null){
-            System.out.println("Identifier: " + ctx.ID().getText());
-            var.setIdentifier(ctx.ID().getText());
+            operationStack.push(searchSymbol(ctx.ID().getText(), getCurrentScope()).getType());
         } else if(ctx.LITERAL_RUNE() != null){
-            System.out.println("Literal Rune: " + ctx.LITERAL_RUNE().getText());
+            operationStack.push("rune");
         } else if (ctx.LITERAL_STRING() != null) {
-            System.out.println("Literal String: " + ctx.LITERAL_STRING().getText());
+            operationStack.push("string");
+        } else if(ctx.NULL() != null) {
+            operationStack.push("null");
+        } else if (ctx.FALSE() != null) {
+            operationStack.push("bool");
+        } else if(ctx.TRUE() != null) {
+            operationStack.push("bool");
         }
+        
         return super.visitPrimary(ctx);
     }
 
     @Override
     public Integer visitReal(SimplexParser.RealContext ctx) {
-        // TODO Auto-generated method stub
+        if (ctx.LITERAL_REAL() != null) {
+            var.setType("real");
+        }
+
+        operationStack.push("real");
         return super.visitReal(ctx);
     }
 
-    @Override
-    public Integer visitUnary(SimplexParser.UnaryContext ctx) {
-        // TODO Auto-generated method stub
-        return super.visitUnary(ctx);
-    }
 
     @Override
     public Integer visitIdentifierList(SimplexParser.IdentifierListContext ctx) {
         
         return super.visitIdentifierList(ctx);
     }
+
+    
 
     @Override
     public Integer visitIdentifier(SimplexParser.IdentifierContext ctx) {
@@ -137,6 +268,7 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
         var = new Symbol(getCurrentScope());
 
         super.visitVarDeclaration(ctx);
+
 
         for (Symbol symbol : declarationStack) {
             vars.add(symbol);

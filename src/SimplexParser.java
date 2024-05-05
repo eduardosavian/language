@@ -18,10 +18,10 @@ public class SimplexParser extends Parser {
 	public static final int
 		WS=1, IF=2, ELSE=3, ELIF=4, SWITCH=5, CASE=6, DEFAULT=7, CONTINUE=8, FOR=9, 
 		BREAK=10, RETURN=11, DO=12, FUN=13, RIGHT_ARROW=14, TYPE=15, STRUCT=16, 
-		LITERAL_HEX=17, LITERAL_BIN=18, LITERAL_INT=19, LITERAL_FLOAT=20, LITERAL_STRING=21, 
+		LITERAL_HEX=17, LITERAL_BIN=18, LITERAL_INT=19, LITERAL_REAL=20, LITERAL_STRING=21, 
 		LITERAL_RUNE=22, DOT=23, COMMA=24, COLON=25, EOS=26, SQUARE_OPEN=27, SQUARE_CLOSE=28, 
 		CURLY_OPEN=29, CURLY_CLOSE=30, PAREN_OPEN=31, PAREN_CLOSE=32, CARET=33, 
-		TRUE=34, FALSE=35, NIL=36, MINUS=37, PLUS=38, SLASH=39, STAR=40, MOD=41, 
+		TRUE=34, FALSE=35, NULL=36, MINUS=37, PLUS=38, SLASH=39, STAR=40, MOD=41, 
 		LT=42, GT=43, LT_EQ=44, GT_EQ=45, EQ_EQ=46, NOT_EQ=47, LOGIC_AND=48, LOGIC_OR=49, 
 		LOGIC_NOT=50, LOGIC_XOR=51, OR=52, EQ=53, AND=54, XOR=55, SHIFT_LEFT=56, 
 		SHIFT_RIGHT=57, SL_COMMENT=58, ML_COMMENT=59, ID=60;
@@ -56,7 +56,7 @@ public class SimplexParser extends Parser {
 			"'continue'", "'for'", "'break'", "'return'", "'do'", "'fun'", "'->'", 
 			"'type'", "'struct'", null, null, null, null, null, null, "'.'", "','", 
 			"':'", "';'", "'['", "']'", "'{'", "'}'", "'('", "')'", "'^'", "'true'", 
-			"'false'", "'nil'", "'-'", "'+'", "'/'", "'*'", "'%'", "'<'", "'>'", 
+			"'false'", "'null'", "'-'", "'+'", "'/'", "'*'", "'%'", "'<'", "'>'", 
 			"'>='", "'<='", "'=='", "'!='", "'&&'", "'||'", "'!'", "'~~'", "'|'", 
 			"'='", "'&'", "'~'", "'<<'", "'>>'"
 		};
@@ -66,10 +66,10 @@ public class SimplexParser extends Parser {
 		return new String[] {
 			null, "WS", "IF", "ELSE", "ELIF", "SWITCH", "CASE", "DEFAULT", "CONTINUE", 
 			"FOR", "BREAK", "RETURN", "DO", "FUN", "RIGHT_ARROW", "TYPE", "STRUCT", 
-			"LITERAL_HEX", "LITERAL_BIN", "LITERAL_INT", "LITERAL_FLOAT", "LITERAL_STRING", 
+			"LITERAL_HEX", "LITERAL_BIN", "LITERAL_INT", "LITERAL_REAL", "LITERAL_STRING", 
 			"LITERAL_RUNE", "DOT", "COMMA", "COLON", "EOS", "SQUARE_OPEN", "SQUARE_CLOSE", 
 			"CURLY_OPEN", "CURLY_CLOSE", "PAREN_OPEN", "PAREN_CLOSE", "CARET", "TRUE", 
-			"FALSE", "NIL", "MINUS", "PLUS", "SLASH", "STAR", "MOD", "LT", "GT", 
+			"FALSE", "NULL", "MINUS", "PLUS", "SLASH", "STAR", "MOD", "LT", "GT", 
 			"LT_EQ", "GT_EQ", "EQ_EQ", "NOT_EQ", "LOGIC_AND", "LOGIC_OR", "LOGIC_NOT", 
 			"LOGIC_XOR", "OR", "EQ", "AND", "XOR", "SHIFT_LEFT", "SHIFT_RIGHT", "SL_COMMENT", 
 			"ML_COMMENT", "ID"
@@ -2118,13 +2118,13 @@ public class SimplexParser extends Parser {
 			case LITERAL_HEX:
 			case LITERAL_BIN:
 			case LITERAL_INT:
-			case LITERAL_FLOAT:
+			case LITERAL_REAL:
 			case LITERAL_STRING:
 			case LITERAL_RUNE:
 			case PAREN_OPEN:
 			case TRUE:
 			case FALSE:
-			case NIL:
+			case NULL:
 			case ID:
 				enterOuterAlt(_localctx, 2);
 				{
@@ -2163,7 +2163,7 @@ public class SimplexParser extends Parser {
 		public TerminalNode LITERAL_RUNE() { return getToken(SimplexParser.LITERAL_RUNE, 0); }
 		public TerminalNode TRUE() { return getToken(SimplexParser.TRUE, 0); }
 		public TerminalNode FALSE() { return getToken(SimplexParser.FALSE, 0); }
-		public TerminalNode NIL() { return getToken(SimplexParser.NIL, 0); }
+		public TerminalNode NULL() { return getToken(SimplexParser.NULL, 0); }
 		public GroupContext group() {
 			return getRuleContext(GroupContext.class,0);
 		}
@@ -2256,7 +2256,7 @@ public class SimplexParser extends Parser {
 				enterOuterAlt(_localctx, 9);
 				{
 				setState(268);
-				match(NIL);
+				match(NULL);
 				}
 				break;
 			case 10:
@@ -2533,7 +2533,7 @@ public class SimplexParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class RealContext extends ParserRuleContext {
-		public TerminalNode LITERAL_FLOAT() { return getToken(SimplexParser.LITERAL_FLOAT, 0); }
+		public TerminalNode LITERAL_REAL() { return getToken(SimplexParser.LITERAL_REAL, 0); }
 		public RealContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -2560,7 +2560,7 @@ public class SimplexParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(297);
-			match(LITERAL_FLOAT);
+			match(LITERAL_REAL);
 			}
 		}
 		catch (RecognitionException re) {

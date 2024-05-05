@@ -142,7 +142,7 @@ primary
 	| LITERAL_RUNE
 	| TRUE
 	| FALSE
-	| NIL
+	| NULL
 	| group
 	| functionCall
 ;
@@ -167,7 +167,7 @@ integer
 ;
 
 real
-	: LITERAL_FLOAT
+	: LITERAL_REAL
 ;
 
 indexing
