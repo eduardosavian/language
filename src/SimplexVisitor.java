@@ -11,10 +11,11 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
     private Deque<String> scopeStack = new ArrayDeque<>();
     ArrayList<Symbol> vars = new ArrayList<Symbol>();
+    ArrayList<Symbol> vars_aux = new ArrayList<Symbol>();
     private Integer scopeCounter = 0;
     private Symbol var = null;
     private Deque<String> expressionStack = new ArrayDeque<>();
-
+    private Symbol var_aux = null;
 
     @Override
     public Integer visitScope(SimplexParser.ScopeContext ctx) {
@@ -53,7 +54,6 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
         return "global";
     }
 
-    
     @Override
     public Integer visitBitShift(SimplexParser.BitShiftContext ctx) {
         // TODO Auto-generated method stub
@@ -100,7 +100,6 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
         for (String expression : expressionStack) {
             System.out.println(expression);
         }
-
 
         return null;
     }
@@ -150,7 +149,8 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
     public Integer visitIdentifierList(SimplexParser.IdentifierListContext ctx) {
 
         if (isDeclared(ctx.getText(), getCurrentScope())) {
-            System.err.println("Error: Variable '" + ctx.getText() + "' already exists in scope '" + getCurrentScope() + "'");
+            System.err.println(
+                    "Error: Variable '" + ctx.getText() + "' already exists in scope '" + getCurrentScope() + "'");
             System.exit(1);
         }
 
@@ -178,19 +178,34 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
     @Override
     public Integer visitIndexing(SimplexParser.IndexingContext ctx) {
-        // TODO Auto-generated method stub
+        var_aux = new Symbol(getCurrentScope());
+        var_aux.setIdentifier(ctx.ID().getText());
+
+        Symbol var_aux2 = searchSymbol(ctx.ID().getText(), getCurrentScope());
+        
+
+        vars_aux.add(var_aux2);
         return super.visitIndexing(ctx);
+    }
+
+    private Symbol searchSymbol(String identifier, String scope) {
+        for (Symbol symbol : vars) {
+            if (symbol.getIdentifier().equals(identifier) && scope.contains(symbol.getScope())) {
+                return symbol;
+            }
+        }
+        return null;
     }
 
     @Override
     public Integer visitInlineStatement(SimplexParser.InlineStatementContext ctx) {
-        
+
         return super.visitInlineStatement(ctx);
     }
 
     @Override
     public Integer visitInteger(SimplexParser.IntegerContext ctx) {
-        
+
         return super.visitInteger(ctx);
     }
 
@@ -206,8 +221,35 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
     @Override
     public Integer visitPrimary(SimplexParser.PrimaryContext ctx) {
-        // TODO Auto-generated method stub
+        if (ctx.ID() != null) {
+            if (!isDeclared(ctx.ID().getText(), getCurrentScope())) {
+                System.err.println("Error: Variable '" + ctx.ID().getText() + "' not declared in scope '"
+                        + getCurrentScope() + "'");
+                System.exit(1);
+            }
+
+            Symbol symbol_aux = new Symbol(getCurrentScope());
+
+            for (Symbol symbol : vars) {
+                if (symbol.getIdentifier().equals(ctx.ID().getText())
+                        && getCurrentScope().contains(symbol.getScope())) {
+                    symbol_aux = symbol;
+                }
+            }
+
+            vars_aux.add(symbol_aux);
+        }
+
         return super.visitPrimary(ctx);
+    }
+
+    private Boolean isSameType(String var, String scope) {
+        for (Symbol symbol : vars) {
+            if (symbol.getIdentifier().equals(var) && scope.contains(symbol.getScope())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -260,10 +302,12 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
     @Override
     public Integer visitTypeExpression(SimplexParser.TypeExpressionContext ctx) {
-        
+        if (var != null) {
+            var.setType(ctx.getText());
+        }
+
         return super.visitTypeExpression(ctx);
     }
-
 
     @Override
     public Integer visitUnary(SimplexParser.UnaryContext ctx) {
@@ -272,21 +316,45 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
     @Override
     public Integer visitVarAssignment(SimplexParser.VarAssignmentContext ctx) {
-        
-        return super.visitVarAssignment(ctx);
+
+        super.visitVarAssignment(ctx);
+
+        for (Symbol symbol1 : vars_aux) {
+            for (Symbol symbol2 : vars_aux) {
+                System.out.println(symbol1.getIdentifier() + " " + symbol2.getIdentifier());
+
+                if (!symbol1.getIdentifier().equals(symbol2.getIdentifier())) {
+                    if (symbol1.getType() == symbol2.getType() && symbol1.getScope().equals(symbol2.getScope())) {
+                        System.out.println(symbol1.getModifiers() + " " + symbol2.getModifiers());
+
+                        if (symbol1.getModifiers().equals(symbol2.getModifiers())) {
+                            symbol2.setUsed(true);
+                        } else {
+                            System.err.println("Error: Modifiers mismatch for variable '" + symbol1.getIdentifier()
+                                    + symbol1.getType()  + " "+ symbol1.getModifiers() +
+                                    "' in scope '" + getCurrentScope() + "' from "
+                                    + symbol2.getIdentifier() + symbol2.getType() + symbol1.getModifiers() + " "+
+                                    "' in scope '" + getCurrentScope() + "'");
+                            //System.exit(1);
+                        }
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     @Override
     public Integer visitVarDeclaration(SimplexParser.VarDeclarationContext ctx) {
         var = new Symbol(getCurrentScope());
-        
+
         super.visitVarDeclaration(ctx);
-        
+
         if (var != null) {
             vars.add(var);
             var = null;
         }
-
 
         return null;
     }
@@ -335,6 +403,12 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
     public void printSymbols() {
         for (Symbol symbol : vars) {
+            symbol.print();
+        }
+    }
+
+    public void PrintSymbolsAux() {
+        for (Symbol symbol : vars_aux) {
             symbol.print();
         }
     }
