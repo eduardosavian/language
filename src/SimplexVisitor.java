@@ -276,6 +276,8 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
                     System.exit(1);
                 }
 
+                
+
                 // if (!isVariableDefined(expression, currentScope)) {
                 //     System.err.println("Error: Variable '" + id + "' doesn`t exists in scope '" + currentScope + "'");
                 //     System.exit(1);
@@ -285,6 +287,7 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
                 // areVariablesSameTypeInScope(id1, currentScope1, id2, currentScope2)
             }
         }
+        System.out.println("Var Assignment: " + ctx.getText());
 
         return super.visitVarAssignment(ctx);
     }
@@ -317,6 +320,7 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
 
         ParseTree type = ctx.getChild(2);
         String typeText = type.getText();
+        System.out.println(typeText);
 
         ParseTree expressions = null;
         Integer expressionsCount;
@@ -328,7 +332,6 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
             expressions = ctx.getChild(4);
             expressionsCount = expressions.getChildCount();
             expressionsText = expressions.getText();
-            //System.out.println(expressions.);
 
             if (idsCount != expressionsCount) {
                 System.err.println(
@@ -347,6 +350,7 @@ public class SimplexVisitor extends SimplexParserBaseVisitor<Integer> {
         for (int i = 0; i < varsSize; i++) {
             if (i % 2 == 0) {
                 String id = ids.getChild(i).getText();
+                System.out.println("ID: " + id + " Type: " + typeText);
 
                 if (isVariableRedeclaredInScope(id, currentScope)) {
                     System.err.println("Error: Variable '" + id + "' already exists in scope '" + currentScope + "'");

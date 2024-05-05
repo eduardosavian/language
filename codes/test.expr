@@ -1,5 +1,5 @@
 a : int = 0;
-c : []int;
-d : []int;
+c : int = 10;
+d : [][]int;
 
-a = 0;
+c = a;

@@ -20,11 +20,9 @@ public class Symbol {
     private Type type;
     private Boolean isInitialized = false;
     private Boolean used = false;
-    private String Scope = "";
+    private String scope = "";
+    private String modifiers = "";
     private Boolean isParameter = false;
-    private Boolean isVector = false;
-    private Boolean isMatrix = false;
-    private Boolean isReference = false;
     private Boolean isFunction = false;
 
     Symbol(String identifier, String type, Boolean expressionsExist, String Scope) {
@@ -35,6 +33,7 @@ public class Symbol {
         for (Type typeSymbol : Type.values()) {
             if (type.contains(typeSymbol.getType())) {
                 this.type = typeSymbol;
+                this.modifiers = type.replace(typeSymbol.getType(), "");
                 typeExists = true;
                 break;
             }
@@ -47,15 +46,11 @@ public class Symbol {
             System.exit(1);
         }
 
-        this.isVector = (type.contains("["));
-
         this.isInitialized = expressionsExist;
         
         this.used = false;
-        this.Scope = Scope;
+        this.scope = Scope;
         this.isParameter = false;
-        this.isVector = false;
-        this.isReference = false;
         this.isFunction = false;
 
     }
@@ -93,11 +88,11 @@ public class Symbol {
     }
 
     public String getScope() {
-        return Scope;
+        return scope;
     }
 
     public void setScope(String Scope) {
-        this.Scope = Scope;
+        this.scope = Scope;
     }
 
     public Boolean getIsParameter() {
@@ -106,30 +101,6 @@ public class Symbol {
 
     public void setIsParameter(Boolean isParameter) {
         this.isParameter = isParameter;
-    }
-
-    public Boolean getisVector() {
-        return isVector;
-    }
-
-    public void setisVector(Boolean isVector) {
-        this.isVector = isVector;
-    }
-
-    public Boolean getIsMatrix() {
-        return isMatrix;
-    }
-
-    public void setIsMatrix(Boolean isMatrix) {
-        this.isMatrix = isMatrix;
-    }
-
-    public Boolean getIsReference() {
-        return isReference;
-    }
-
-    public void setIsReference(Boolean isReference) {
-        this.isReference = isReference;
     }
 
     public Boolean getIsFunction() {
@@ -146,19 +117,15 @@ public class Symbol {
         System.out.print(" | ");
         System.out.print("Type: " + type.getType());
         System.out.print(" | ");
+        System.out.print("Modifiers: " + modifiers);
+        System.out.print(" | ");
         System.out.print("Initialized: " + isInitialized);
         System.out.print(" | ");
         System.out.print("Used: " + used);
         System.out.print(" | ");
-        System.out.print("Scope: " + Scope);
+        System.out.print("Scope: " + scope);
         System.out.print(" | ");
         System.out.print("Parameter: " + isParameter);
-        System.out.print(" | ");
-        System.out.print("Array: " + isVector);
-        System.out.print(" | ");
-        System.out.print("Matrix: " + isMatrix);
-        System.out.print(" | ");
-        System.out.print("Reference: " + isReference);
         System.out.print(" | ");
         System.out.println("Function: " + isFunction);
     }
